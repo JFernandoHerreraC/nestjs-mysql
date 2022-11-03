@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, ConflictException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';;
 import { Repository } from 'typeorm'
 import { User } from './user.entity';
@@ -10,24 +10,51 @@ export class UsersService {
     constructor(@InjectRepository(User) private userRepository: Repository<User>) {
 
     }
-    createUser(user: CreateUserDto) {
+    async createUser(user: CreateUserDto) {
+        const userFound = await this.userRepository.findOne({
+            where: {
+                username: user.username
+            }
+        });
+        if (userFound) {
+            throw new ConflictException('User already exists');
+        }
         const newUser = this.userRepository.create(user);
         return this.userRepository.save(newUser);
     }
     getUsers() {
         return this.userRepository.find();
     }
-    getUser(id: number) {
-        return this.userRepository.findOne({
+    async getUser(id: number) {
+
+        const userFound = await this.userRepository.findOne({
             where: {
                 id
             }
         });
+        if (!userFound) {
+            throw new NotFoundException('User not found');
+        }
+        return userFound;
     }
-    deleteUser(id: number) {
-        return this.userRepository.delete({ id })
+    async deleteUser(id: number) {
+        const result = await this.userRepository.delete({id});
+        if (result.affected === 0) {
+            throw new NotFoundException('User not found');
+            
+        }
+        return result;
     }
-    updateUser(id: number, user: UpdateUserDto) {
-        return this.userRepository.update({id},user);
+    async updateUser(id: number, user: UpdateUserDto) {
+        const userFound = await this.userRepository.findOne({
+            where: {
+                id
+            }
+        });
+        if (!userFound) {
+            throw new NotFoundException('User not found');
+        }
+        const updateUser = Object.assign(userFound,user);
+        return this.userRepository.save(updateUser);
     }
 }
