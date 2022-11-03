@@ -4,10 +4,15 @@ import { Repository } from 'typeorm'
 import { User } from './user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { CreateProfileDto } from './dto/create-profile.dto';
+import { Profile } from './profile.entity';
 
 @Injectable()
 export class UsersService {
-    constructor(@InjectRepository(User) private userRepository: Repository<User>) {
+    constructor(
+        @InjectRepository(User) private userRepository: Repository<User>,
+        @InjectRepository(Profile) private profileRepository: Repository<Profile>
+        ) {
 
     }
     async createUser(user: CreateUserDto) {
@@ -38,10 +43,10 @@ export class UsersService {
         return userFound;
     }
     async deleteUser(id: number) {
-        const result = await this.userRepository.delete({id});
+        const result = await this.userRepository.delete({ id });
         if (result.affected === 0) {
             throw new NotFoundException('User not found');
-            
+
         }
         return result;
     }
@@ -54,7 +59,23 @@ export class UsersService {
         if (!userFound) {
             throw new NotFoundException('User not found');
         }
-        const updateUser = Object.assign(userFound,user);
+        const updateUser = Object.assign(userFound, user);
         return this.userRepository.save(updateUser);
+    }
+
+    async createProfile(id: number, profile: CreateProfileDto) {
+        const userFound = await this.userRepository.findOne({
+            where: {
+                id
+            }
+        });
+
+        if (!userFound) {
+            throw new NotFoundException('User not found');
+        }
+        const newProfile = this.profileRepository.create(profile);
+        const savedProfile = await this.profileRepository.save(newProfile);
+        userFound.profile = savedProfile;
+        return this.userRepository.save(userFound);
     }
 }
