@@ -30,7 +30,7 @@ export class UsersService {
     getUsers() {
         return this.userRepository.find();
     }
-    async getUser(id: number) {
+    async getUser(id: string) {
 
         const userFound = await this.userRepository.findOne({
             where: {
@@ -43,7 +43,7 @@ export class UsersService {
         }
         return userFound;
     }
-    async deleteUser(id: number) {
+    async deleteUser(id: string) {
         const result = await this.userRepository.delete({ id });
         if (result.affected === 0) {
             throw new NotFoundException('User not found');
@@ -51,7 +51,7 @@ export class UsersService {
         }
         return result;
     }
-    async updateUser(id: number, user: UpdateUserDto) {
+    async updateUser(id: string, user: UpdateUserDto) {
         const userFound = await this.userRepository.findOne({
             where: {
                 id
@@ -64,7 +64,7 @@ export class UsersService {
         return this.userRepository.save(updateUser);
     }
 
-    async createProfile(id: number, profile: CreateProfileDto) {
+    async createProfile(id: string, profile: CreateProfileDto) {
         const userFound = await this.userRepository.findOne({
             where: {
                 id

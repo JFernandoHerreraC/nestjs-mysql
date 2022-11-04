@@ -1,4 +1,4 @@
-import { Controller, Body, Param, ParseIntPipe, Delete, Post, Get, Patch } from '@nestjs/common';
+import { Controller, Body, Param, Delete, Post, Get, Patch, ParseUUIDPipe } from '@nestjs/common';
 import { CreateProfileDto } from './dto/create-profile.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -19,20 +19,20 @@ export class UsersController {
         return this.usersService.getUsers();
     }
     @Get(':id')
-    getUser(@Param('id', ParseIntPipe) id: number): Promise<User> {
+    getUser(@Param('id', ParseUUIDPipe) id: string): Promise<User> {
         return this.usersService.getUser(id);
     }
     @Delete(':id')
-    deleteUser(@Param('id', ParseIntPipe) id: number) {
+    deleteUser(@Param('id', ParseUUIDPipe) id: string) {
         return this.usersService.deleteUser(id)
     }
     @Patch(':id')
-    updateUser(@Param('id', ParseIntPipe) id: number, @Body() user: UpdateUserDto) {
+    updateUser(@Param('id', ParseUUIDPipe) id: string, @Body() user: UpdateUserDto) {
         return this.usersService.updateUser(id, user);
     }
 
     @Post(':id/profile')
-    createProfile(@Param('id', ParseIntPipe) id:number, @Body() profile: CreateProfileDto){
+    createProfile(@Param('id', ParseUUIDPipe) id:string, @Body() profile: CreateProfileDto){
         return this.usersService.createProfile(id, profile);
     }
 }

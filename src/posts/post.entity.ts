@@ -3,8 +3,8 @@ import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm"
 
 @Entity()
 export class Post{
-    @PrimaryGeneratedColumn()
-    id: number
+    @PrimaryGeneratedColumn("uuid")
+    id: string
     
     @Column()
     title: string
@@ -13,7 +13,7 @@ export class Post{
     content: string
     
     @Column()
-    authorId
+    authorId: string
     
     @ManyToOne(() => User, user => user.posts)
     author:User
