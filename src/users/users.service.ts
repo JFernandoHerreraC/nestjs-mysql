@@ -35,7 +35,8 @@ export class UsersService {
         const userFound = await this.userRepository.findOne({
             where: {
                 id
-            }
+            },
+            relations:['posts', 'profile']
         });
         if (!userFound) {
             throw new NotFoundException('User not found');
