@@ -5,6 +5,7 @@ import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PostsModule } from './posts/posts.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -14,7 +15,7 @@ import { PostsModule } from './posts/posts.module';
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: process.env.HOST_DATABASE,
-      port: 3306,
+      port: parseInt(process.env.PORT_DATABASE),
       username: process.env.USER_DATABASE,
       password: process.env.PASSWORD_DATABASE,
       database: process.env.NAME_DATABASE,
@@ -23,6 +24,7 @@ import { PostsModule } from './posts/posts.module';
     }),
     UsersModule,
     PostsModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

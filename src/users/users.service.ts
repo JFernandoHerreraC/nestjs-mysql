@@ -15,18 +15,6 @@ export class UsersService {
         ) {
 
     }
-    async createUser(user: CreateUserDto) {
-        const userFound = await this.userRepository.findOne({
-            where: {
-                username: user.username
-            }
-        });
-        if (userFound) {
-            throw new ConflictException('User already exists');
-        }
-        const newUser = this.userRepository.create(user);
-        return this.userRepository.save(newUser);
-    }
     getUsers() {
         return this.userRepository.find();
     }

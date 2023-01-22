@@ -10,10 +10,6 @@ export class UsersController {
     constructor(private usersService: UsersService) {
 
     }
-    @Post()
-    createUser(@Body() user: CreateUserDto): Promise<User> {
-        return this.usersService.createUser(user);
-    }
     @Get()
     getUsers(): Promise<User[]> {
         return this.usersService.getUsers();
